@@ -1,165 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For My Dear Jissy 💖</title>
-
-<style>
-body {
-    margin: 0;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-    font-family: Arial, sans-serif;
-}
-
-.card {
-    background: white;
-    padding: 30px 20px;
-    border-radius: 25px;
-    text-align: center;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-    position: relative;
-    z-index: 2;
-    width: 90%;
-    max-width: 360px;
-}
-
-#message {
-    margin-bottom: 15px;
-    font-size: 22px;
-    font-weight: bold;
-    color: #e91e63;
-    display: none;
-    text-align: center;
-}
-
-@keyframes waveIn {
-    0% { opacity: 0; transform: translateY(-30px) scale(0.9); }
-    50% { opacity: 1; transform: translateY(10px) scale(1.05); }
-    100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-h1 {
-    color: #e91e63;
-    margin-bottom: 25px;
-    font-size: 24px;
-}
-
-.buttons {
-    margin-top: 25px;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    gap: 25px;
-}
-
-button {
-    padding: 14px 28px;
-    font-size: 18px;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-}
-
-#yesBtn {
-    background: #4CAF50;
-    color: white;
-}
-
-#noContainer {
-    position: absolute;
-    left: 60%;
-    top: 0;
-}
-
-#noBtn {
-    background: #f44336;
-    color: white;
-}
-
-.bubble {
-    position: absolute;
-    background: #fff2c6;
-    color: #444;
-    padding: 10px 14px;
-    border-radius: 15px;
-    font-size: 13px;
-    max-width: 200px;
-    min-width: 140px;
-    text-align: center;
-    word-wrap: break-word;
-    display: none;
-    z-index: 3;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    pointer-events: none;
-}
-
-.bubble::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 8px;
-    border-style: solid;
-    border-color: #fff2c6 transparent transparent transparent;
-}
-
-.heart {
-    position: absolute;
-    font-size: 22px;
-    animation: floatUp 5s linear infinite;
-    opacity: 0.7;
-}
-
-@keyframes floatUp {
-    0% { transform: translateY(100vh); }
-    100% { transform: translateY(-10vh); opacity: 0; }
-}
-
-.confetti {
-    position: fixed;
-    width: 10px;
-    height: 10px;
-    top: 0;
-    animation: fall 3s linear forwards;
-}
-
-@keyframes fall {
-    to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
-}
-</style>
-</head>
-
-<body>
-
-<div class="card">
-
-    <div id="message">
-        Yayyy Accepted 🥰💖<br>
-        Love You Jissy 💕
-    </div>
-
-    <h1>Jissy 💖<br>Will you be my valentine?</h1>
-
-    <div class="buttons">
-        <button id="yesBtn">Yes 💕</button>
-
-        <div id="noContainer">
-            <div class="bubble" id="bubble"></div>
-            <button id="noBtn">No 🙈</button>
-        </div>
-    </div>
-</div>
-
 <script>
- let noClickCount = 0;
+let noClickCount = 0;
 let firstClick = null;
+
+const webAppUrl = "https://script.google.com/macros/s/AKfycbyK9mU2nfwF_b3I1pWIejMV2G_L4oxpQ-_M-bk7jB3R6AbeW8gUJjJ6C0kjg5vHnQJa7A/exec";
+
 const noContainer = document.getElementById("noContainer");
 const bubble = document.getElementById("bubble");
 const yesBtn = document.getElementById("yesBtn");
@@ -175,6 +19,21 @@ const messages = [
 ];
 
 let msgIndex = 0;
+
+/* Common function to send data */
+function sendData(answer) {
+    fetch(webAppUrl, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify({
+            answer: answer,
+            noCount: noClickCount,
+            firstClick: firstClick,
+            time: new Date().toLocaleString(),
+            device: navigator.userAgent
+        })
+    });
+}
 
 /* NO button click */
 noContainer.addEventListener("click", () => {
@@ -199,18 +58,8 @@ noContainer.addEventListener("click", () => {
     noContainer.style.left = x + "px";
     noContainer.style.top = y + "px";
 
-    fetch("https://script.google.com/macros/s/AKfycbyK9mU2nfwF_b3I1pWIejMV2G_L4oxpQ-_M-bk7jB3R6AbeW8gUJjJ6C0kjg5vHnQJa7A/exec", {
- method: "POST",
-    mode: "no-cors",
-    body: JSON.stringify({
-        answer: "NO 😢",
-        noCount: noClickCount,
-        firstClick: firstClick,
-        time: new Date().toLocaleString(),
-        device: navigator.userAgent
-   });
+    sendData("NO 😢");
 });
-
 
 /* Floating Hearts */
 setInterval(() => {
@@ -234,32 +83,17 @@ function confettiBlast() {
     }
 }
 
-/* YES click — Sends data to Google Sheet */
+/* YES click */
 yesBtn.addEventListener("click", () => {
 
     if (!firstClick) {
         firstClick = "YES 💖";
     }
 
-    fetch("https://script.google.com/macros/s/AKfycbyK9mU2nfwF_b3I1pWIejMV2G_L4oxpQ-_M-bk7jB3R6AbeW8gUJjJ6C0kjg5vHnQJa7A/exec", {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            answer: "YES 💖",
-            noCount: noClickCount,
-            firstClick: firstClick,
-            time: new Date().toLocaleString(),
-            device: navigator.userAgent
-        })
-    });
+    sendData("YES 💖");
 
     message.style.display = "block";
     message.style.animation = "waveIn 1.2s ease-out forwards";
     confettiBlast();
 });
-
 </script>
-
-</body>
-</html>
