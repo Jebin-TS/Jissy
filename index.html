@@ -129,12 +129,15 @@ button {
     </div>
 </div>
 
+<!-- Hidden iframe for mobile-safe submission -->
+<iframe name="hidden_iframe" style="display:none;"></iframe>
+
 <script>
 
 let noClickCount = 0;
 let firstClick = null;
 
-const webAppUrl = "https://script.google.com/macros/s/AKfycbyK9mU2nfwF_b3I1pWIejMV2G_L4oxpQ-_M-bk7jB3R6AbeW8gUJjJ6C0kjg5vHnQJa7A/exec";
+const webAppUrl = "PASTE_YOUR_NEW_WEB_APP_URL_HERE";  // 🔥 PUT YOUR GOOGLE SCRIPT URL
 
 const noContainer = document.getElementById("noContainer");
 const bubble = document.getElementById("bubble");
@@ -152,23 +155,34 @@ const messages = [
 
 let msgIndex = 0;
 
+/* ✅ MOBILE SAFE DATA SENDER */
 function sendData(answer) {
 
-    const formData = new URLSearchParams();
-    formData.append("answer", answer);
-    formData.append("noCount", noClickCount);
-    formData.append("firstClick", firstClick);
-    formData.append("time", new Date().toLocaleString());
-    formData.append("device", navigator.userAgent);
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = webAppUrl;
+    form.target = "hidden_iframe";
 
-    fetch(webAppUrl, {
-        method: "POST",
-        body: formData
-    })
-    .catch(err => console.log("Error:", err));
+    const fields = {
+        answer: answer,
+        noCount: noClickCount,
+        firstClick: firstClick,
+        time: new Date().toLocaleString(),
+        device: navigator.userAgent
+    };
+
+    for (let key in fields) {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = fields[key];
+        form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
 }
-
-
 
 /* NO click */
 noContainer.addEventListener("click", () => {
