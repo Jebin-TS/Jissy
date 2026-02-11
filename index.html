@@ -200,17 +200,15 @@ noContainer.addEventListener("click", () => {
     noContainer.style.top = y + "px";
 
     fetch("https://script.google.com/macros/s/AKfycbyK9mU2nfwF_b3I1pWIejMV2G_L4oxpQ-_M-bk7jB3R6AbeW8gUJjJ6C0kjg5vHnQJa7A/exec", {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            answer: "NO 😢",
-            noCount: noClickCount,
-            firstClick: firstClick,
-            time: new Date().toLocaleString(),
-            device: navigator.userAgent
-        })
-    });
+ method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify({
+        answer: "NO 😢",
+        noCount: noClickCount,
+        firstClick: firstClick,
+        time: new Date().toLocaleString(),
+        device: navigator.userAgent
+   });
 });
 
 
