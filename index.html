@@ -29,7 +29,6 @@ body {
     max-width: 360px;
 }
 
-/* 💖 Animated YES message */
 #message {
     margin-bottom: 15px;
     font-size: 22px;
@@ -83,7 +82,6 @@ button {
     color: white;
 }
 
-/* 💬 Bubble */
 .bubble {
     position: absolute;
     background: #fff2c6;
@@ -112,7 +110,6 @@ button {
     border-color: #fff2c6 transparent transparent transparent;
 }
 
-/* ❤️ Hearts */
 .heart {
     position: absolute;
     font-size: 22px;
@@ -125,7 +122,6 @@ button {
     100% { transform: translateY(-10vh); opacity: 0; }
 }
 
-/* 🎊 Confetti */
 .confetti {
     position: fixed;
     width: 10px;
@@ -149,7 +145,7 @@ button {
         Love You Jissy 💕
     </div>
 
-    <h1>Jissy 💖<br>Will you be my valentine</h1>
+    <h1>Jissy 💖<br>Will you be my valentine?</h1>
 
     <div class="buttons">
         <button id="yesBtn">Yes 💕</button>
@@ -169,10 +165,10 @@ const message = document.getElementById("message");
 const card = document.querySelector(".card");
 
 const messages = [
-    "You're my everything😉",
-    "You set my soul on fire🙈",
-    "I love every moment with you. 💖",
-    "Being with you feels like home.😉",
+    "You're my everything 😉",
+    "You set my soul on fire 🙈",
+    "I love every moment with you 💖",
+    "Being with you feels like home 😉",
     "Heart says YES 💕"
 ];
 
@@ -181,7 +177,6 @@ let msgIndex = 0;
 /* NO button click */
 noContainer.addEventListener("click", () => {
 
-    // Bubble text
     bubble.textContent = messages[msgIndex];
     bubble.style.display = "block";
     msgIndex = (msgIndex + 1) % messages.length;
@@ -190,51 +185,14 @@ noContainer.addEventListener("click", () => {
     const btnRect = noContainer.getBoundingClientRect();
 
     const EDGE = 15;
-    let x, y, safe = false, tries = 0;
-
-    while (!safe && tries < 80) {
-        tries++;
-        x = Math.random() * (cardRect.width - btnRect.width - EDGE);
-        y = Math.random() * (cardRect.height - btnRect.height - EDGE);
-
-        safe = true;
-    }
+    let x = Math.random() * (cardRect.width - btnRect.width - EDGE);
+    let y = Math.random() * (cardRect.height - btnRect.height - EDGE);
 
     noContainer.style.left = x + "px";
     noContainer.style.top = y + "px";
-
-    /* SAFE bubble placement */
-    bubble.style.top = "";
-    bubble.style.bottom = "";
-    bubble.style.left = "";
-    bubble.style.right = "";
-    bubble.style.transform = "";
-
-    const GAP = 12;
-    const spaceTop = y;
-    const spaceBottom = cardRect.height - (y + btnRect.height);
-    const spaceRight = cardRect.width - (x + btnRect.width);
-
-    if (spaceTop > 80) {
-        bubble.style.bottom = btnRect.height + GAP + "px";
-        bubble.style.left = "50%";
-        bubble.style.transform = "translateX(-50%)";
-    } else if (spaceBottom > 80) {
-        bubble.style.top = btnRect.height + GAP + "px";
-        bubble.style.left = "50%";
-        bubble.style.transform = "translateX(-50%)";
-    } else if (spaceRight > 160) {
-        bubble.style.left = btnRect.width + GAP + "px";
-        bubble.style.top = "50%";
-        bubble.style.transform = "translateY(-50%)";
-    } else {
-        bubble.style.right = btnRect.width + GAP + "px";
-        bubble.style.top = "50%";
-        bubble.style.transform = "translateY(-50%)";
-    }
 });
 
-/* Hearts */
+/* Floating Hearts */
 setInterval(() => {
     const h = document.createElement("div");
     h.className = "heart";
@@ -256,11 +214,15 @@ function confettiBlast() {
     }
 }
 
-/* YES click */
-yesBtn.addEventListener(yesBtn.addEventListener("click", () => {
+/* YES click — Sends data to Google Sheet */
+yesBtn.addEventListener("click", () => {
 
     fetch("https://script.google.com/macros/s/AKfycbyK9mU2nfwF_b3I1pWIejMV2G_L4oxpQ-_M-bk7jB3R6AbeW8gUJjJ6C0kjg5vHnQJa7A/exec", {
         method: "POST",
+        mode: "no-cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify({
             answer: "YES 💖",
             time: new Date().toLocaleString(),
@@ -272,10 +234,7 @@ yesBtn.addEventListener(yesBtn.addEventListener("click", () => {
     message.style.animation = "waveIn 1.2s ease-out forwards";
     confettiBlast();
 });
-);
 </script>
 
 </body>
 </html>
-
-
