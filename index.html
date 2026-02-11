@@ -158,6 +158,8 @@ button {
 </div>
 
 <script>
+ let noClickCount = 0;
+let firstClick = null;
 const noContainer = document.getElementById("noContainer");
 const bubble = document.getElementById("bubble");
 const yesBtn = document.getElementById("yesBtn");
@@ -177,6 +179,12 @@ let msgIndex = 0;
 /* NO button click */
 noContainer.addEventListener("click", () => {
 
+    noClickCount++;
+
+    if (!firstClick) {
+        firstClick = "NO 😢";
+    }
+
     bubble.textContent = messages[msgIndex];
     bubble.style.display = "block";
     msgIndex = (msgIndex + 1) % messages.length;
@@ -190,7 +198,21 @@ noContainer.addEventListener("click", () => {
 
     noContainer.style.left = x + "px";
     noContainer.style.top = y + "px";
+
+    fetch("YOUR_WEB_APP_URL", {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            answer: "NO 😢",
+            noCount: noClickCount,
+            firstClick: firstClick,
+            time: new Date().toLocaleString(),
+            device: navigator.userAgent
+        })
+    });
 });
+
 
 /* Floating Hearts */
 setInterval(() => {
@@ -217,14 +239,18 @@ function confettiBlast() {
 /* YES click — Sends data to Google Sheet */
 yesBtn.addEventListener("click", () => {
 
-    fetch("https://script.google.com/macros/s/AKfycbyK9mU2nfwF_b3I1pWIejMV2G_L4oxpQ-_M-bk7jB3R6AbeW8gUJjJ6C0kjg5vHnQJa7A/exec", {
+    if (!firstClick) {
+        firstClick = "YES 💖";
+    }
+
+    fetch("YOUR_WEB_APP_URL", {
         method: "POST",
         mode: "no-cors",
-        headers: {
-            "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             answer: "YES 💖",
+            noCount: noClickCount,
+            firstClick: firstClick,
             time: new Date().toLocaleString(),
             device: navigator.userAgent
         })
@@ -234,6 +260,7 @@ yesBtn.addEventListener("click", () => {
     message.style.animation = "waveIn 1.2s ease-out forwards";
     confettiBlast();
 });
+
 </script>
 
 </body>
