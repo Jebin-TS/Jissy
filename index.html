@@ -153,18 +153,21 @@ const messages = [
 let msgIndex = 0;
 
 function sendData(answer) {
+
+    const formData = new URLSearchParams();
+    formData.append("answer", answer);
+    formData.append("noCount", noClickCount);
+    formData.append("firstClick", firstClick);
+    formData.append("time", new Date().toLocaleString());
+    formData.append("device", navigator.userAgent);
+
     fetch(webAppUrl, {
         method: "POST",
         mode: "no-cors",
-        body: JSON.stringify({
-            answer: answer,
-            noCount: noClickCount,
-            firstClick: firstClick,
-            time: new Date().toLocaleString(),
-            device: navigator.userAgent
-        })
+        body: formData
     });
 }
+
 
 /* NO click */
 noContainer.addEventListener("click", () => {
